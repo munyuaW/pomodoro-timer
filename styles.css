@@ -5,8 +5,8 @@
 }
 
 :root {
-  --body-bg: #0f172a;
-  --card-bg: #111827;
+  --body-bg: linear-gradient(135deg, #0b1022, #101b3a);
+  --card-bg: #111827e6;
   --text-color: #e5e7eb;
   --muted-text-color: #9ca3af;
   --primary-btn-bg: #22c55e;
@@ -115,7 +115,7 @@ body {
 }
 
 .progress-ring_track {
-  stroke: rgba(156, 173, 165);
+  stroke: rgba(156, 163, 175, 0.2);
 }
 
 .progress-ring_indicator {
