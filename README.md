@@ -68,6 +68,22 @@ It also includes an alarm sound and a circular progress ring.
 ## Project Structure
 
 ```
-pomodoro-timer
-|---
+pomodoro-timer/
+├── assets/
+│   └── ding-ding-sound-effect.mp3
+│   └── icons8-pomodoro-50.png
+├── index.html
+├── styles.css
+├── script.js
+└── README.md
 ```
+
+## Usage
+
+1. Clone or download this repository.
+2. Open the project folder.
+3. Double-click `index.html` (or open it with Live Server in VS Code).
+
+No build tools or dependencies required.
+
+## Live demo available at: [https://munyuaw.github.io/pomodoro-timer/](https://munyuaw.github.io/pomodoro-timer/)
