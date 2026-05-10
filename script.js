@@ -12,6 +12,7 @@ const skipBtn = document.getElementById("skipBtn");
 
 // volume el
 const volumeInputEl = document.getElementById("volume");
+const audio = new Audio();
 
 // the ring
 const progressRingIndicator = document.getElementById("progressRingIndicator");
@@ -177,8 +178,7 @@ function setSelectedMode(newMode) {
 }
 
 function playAlarm() {
-  const audio = new Audio("assets/ding-ding-sound-effect.mp3");
-
+  audio.src = "assets/ding-ding-sound-effect.mp3";
   audio.volume = alarmVolume;
   audio.play();
 }
