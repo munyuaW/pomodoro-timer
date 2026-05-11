@@ -13,6 +13,7 @@ const skipBtn = document.getElementById("skipBtn");
 // volume el
 const volumeInputEl = document.getElementById("volume");
 const audio = new Audio();
+audio.src = "assets/ding-ding-sound-effect.mp3";
 
 // the ring
 const progressRingIndicator = document.getElementById("progressRingIndicator");
@@ -177,10 +178,15 @@ function setSelectedMode(newMode) {
   updateTimerDisplay();
 }
 
-function playAlarm() {
-  audio.src = "assets/ding-ding-sound-effect.mp3";
+async function playAlarm() {
   audio.volume = alarmVolume;
-  audio.play();
+  audio.currentTime = 0;
+
+  try {
+    await Promise.resolve(audio.play());
+  } catch (error) {
+    console.error("Audio playback failed:", error);
+  }
 }
 
 updateTabState();
