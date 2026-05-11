@@ -132,9 +132,11 @@ function updateStatusText() {
   sessionCountEl.textContent = `Completed Focus Sessions: ${completedSessions} / 4`;
 }
 
-function handleSessionComplete() {
+async function handleSessionComplete() {
   stopTimer();
-  playAlarm();
+
+  // pause until sound starts
+  await playAlarm();
 
   const previousMode = currentMode;
   const nextMode = getNextMode(previousMode);
@@ -180,10 +182,10 @@ function setSelectedMode(newMode) {
 
 async function playAlarm() {
   audio.volume = alarmVolume;
-  audio.currentTime = 0;
+  audio.currentTime = 0; // Reset to start
 
   try {
-    await Promise.resolve(audio.play());
+    await audio.play();
   } catch (error) {
     console.error("Audio playback failed:", error);
   }
