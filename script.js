@@ -150,6 +150,7 @@ function resetDefaultDurations() {
   remainingTime = durations[currentMode];
   updateTimerDisplay();
   updateStatusText();
+  toggleExpandPanel();
 }
 
 function initProgressRing() {
