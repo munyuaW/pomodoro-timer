@@ -96,7 +96,7 @@ body {
 
 .time-display {
   line-height: 1;
-  font-size: clamp(3rem, 15vw, 5rem);
+  font-size: clamp(3rem, 15vw, 4rem);
   letter-spacing: 2px;
   font-weight: 700;
 }
@@ -169,6 +169,96 @@ body {
 .audio-control input {
   width: 100%;
   outline: none;
+}
+
+.custom-timer-panel {
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.75rem;
+
+  color: var(--muted-text-color);
+}
+
+.expand-panelBtn {
+  border: none;
+  outline: none;
+  background: transparent;
+
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+
+  cursor: pointer;
+}
+
+.custom-text {
+  color: var(--muted-text-color);
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.expand-panelBtn:hover .custom-text {
+  color: var(--text-color);
+}
+
+.custom-icon {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
+}
+
+button[aria-expanded="true"] .custom-icon {
+  transform: rotate(225deg);
+  margin-top: 0.5rem;
+}
+
+.custom-durations[hidden] {
+  display: none;
+}
+
+.custom-durations {
+  padding: 1rem 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.custom-durations label {
+  font-size: 0.9rem;
+}
+
+.custom-durations input {
+  width: 100%;
+  padding: 0.5rem;
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.custom-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.custom-actions .btn {
+  border: none;
+  outline: none;
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
 }
 
 @media (max-width: 400px) {

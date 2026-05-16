@@ -1,5 +1,10 @@
 const modeTabs = document.querySelectorAll(".tab");
 
+const customTimerBtn = document.getElementById("expandPanelBtn");
+const customTimerPanel = document.getElementById("customDurations");
+const applyDurationsBtn = document.getElementById("applyDurationsBtn");
+const resetDurationsBtn = document.getElementById("resetDurationsBtn");
+
 const statusEl = document.getElementById("statusText");
 const sessionCountEl = document.getElementById("sessionCount");
 
@@ -21,15 +26,23 @@ const RING_RADIUS = 52;
 const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 // duration for each mode
-const DURATIONS = {
-  focus: 25 * 60,
-  shortBreak: 5 * 60,
-  longBreak: 30 * 60,
+const focusMinutesInputEl = document.getElementById("focusMinutes");
+const shortBreakMinutesInputEl = document.getElementById("shortBreakMinutes");
+const longBreakMinutesInputEl = document.getElementById("longBreakMinutes");
+
+const DEFAULT_MINUTES = {
+  focus: 25,
+  shortBreak: 5,
+  longBreak: 30,
 };
+
+const STORAGE_KEY = "timer-durations";
 
 // track state
 let currentMode = "focus";
-let remainingTime = DURATIONS[currentMode];
+let durations = defaultMinutesToSeconds();
+loadFromLocalStorage();
+let remainingTime = durations[currentMode];
 let isRunning = false;
 let completedSessions = 0;
 let timerId = null;
@@ -54,6 +67,90 @@ modeTabs.forEach((tab) => {
 volumeInputEl.addEventListener("input", (e) => {
   alarmVolume = Number(e.target.value);
 });
+
+customTimerBtn.addEventListener("click", toggleExpandPanel);
+
+applyDurationsBtn.addEventListener("click", applyDurationsFromInput);
+
+resetDurationsBtn.addEventListener("click", resetDefaultDurations);
+
+function minutesToSeconds(mins) {
+  return Math.round(mins * 60);
+}
+
+function defaultMinutesToSeconds() {
+  return {
+    focus: minutesToSeconds(DEFAULT_MINUTES.focus),
+    shortBreak: minutesToSeconds(DEFAULT_MINUTES.shortBreak),
+    longBreak: minutesToSeconds(DEFAULT_MINUTES.longBreak),
+  };
+}
+
+function readDurationsFromInput() {
+  return {
+    focus: minutesToSeconds(focusMinutesInputEl.value),
+    shortBreak: minutesToSeconds(shortBreakMinutesInputEl.value),
+    longBreak: minutesToSeconds(longBreakMinutesInputEl.value),
+  };
+}
+
+function applyDurationsFromInput() {
+  durations = readDurationsFromInput();
+  stopTimer();
+
+  remainingTime = durations[currentMode];
+  saveToLocalStorage();
+  updateTabState();
+  updateStatusText();
+  initProgressRing();
+  updateTimerDisplay();
+  toggleExpandPanel();
+}
+
+function saveToLocalStorage() {
+  const durationsObj = {
+    focus: durations.focus,
+    shortBreak: durations.shortBreak,
+    longBreak: durations.longBreak,
+  };
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(durationsObj));
+}
+
+function loadFromLocalStorage() {
+  try {
+    const rawData = localStorage.getItem(STORAGE_KEY);
+    if (!rawData) return;
+
+    const data = JSON.parse(rawData);
+
+    if (
+      typeof data.focus !== "number" ||
+      typeof data.shortBreak !== "number" ||
+      typeof data.longBreak !== "number"
+    )
+      return;
+
+    durations = {
+      focus: data.focus,
+      shortBreak: data.shortBreak,
+      longBreak: data.longBreak,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function resetDefaultDurations() {
+  durations = defaultMinutesToSeconds();
+  stopTimer();
+  localStorage.removeItem(STORAGE_KEY);
+
+  initProgressRing();
+  remainingTime = durations[currentMode];
+  updateTimerDisplay();
+  updateStatusText();
+}
 
 function initProgressRing() {
   progressRingIndicator.style.strokeDasharray = `${CIRCUMFERENCE}`;
@@ -113,7 +210,7 @@ function getModeLabel(mode) {
 }
 
 function updateProgressRing() {
-  const currentModeTotal = DURATIONS[currentMode];
+  const currentModeTotal = durations[currentMode];
   const ratio = remainingTime / currentModeTotal;
   const dashOffset = CIRCUMFERENCE * (1 - ratio);
   progressRingIndicator.style.strokeDashoffset = `${dashOffset}`;
@@ -122,7 +219,7 @@ function updateProgressRing() {
 function resetCurrentMode() {
   stopTimer();
   initProgressRing();
-  remainingTime = DURATIONS[currentMode];
+  remainingTime = durations[currentMode];
   updateTimerDisplay();
   updateStatusText();
 }
@@ -141,7 +238,7 @@ async function handleSessionComplete() {
   const previousMode = currentMode;
   const nextMode = getNextMode(previousMode);
   currentMode = nextMode;
-  remainingTime = DURATIONS[nextMode];
+  remainingTime = durations[nextMode];
 
   updateTabState();
   updateStatusText();
@@ -159,6 +256,8 @@ function getNextMode(currentMode) {
     return "shortBreak";
   }
 
+  if (currentMode === "longBreak") completedSessions = 0;
+
   return "focus";
 }
 
@@ -171,7 +270,7 @@ function updateTabState() {
 
 function setSelectedMode(newMode) {
   currentMode = newMode;
-  remainingTime = DURATIONS[newMode];
+  remainingTime = durations[newMode];
 
   stopTimer();
   updateTabState();
@@ -189,6 +288,12 @@ async function playAlarm() {
   } catch (error) {
     console.error("Audio playback failed:", error);
   }
+}
+
+function toggleExpandPanel() {
+  const expanded = customTimerBtn.getAttribute("aria-expanded") === "true";
+  customTimerBtn.setAttribute("aria-expanded", expanded ? "false" : "true");
+  customTimerPanel.hidden = expanded;
 }
 
 updateTabState();

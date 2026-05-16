@@ -8,6 +8,7 @@
 A responsive Pomodoro Timer web app built with plain HTML, CSS, and JavaScript.
 
 This project uses a classic productivity cycle:
+(The Default durations can be customized.)
 
 - **25 minutes** focus
 - **5 minutes** short break
