@@ -42,6 +42,7 @@ const STORAGE_KEY = "timer-durations";
 let currentMode = "focus";
 let durations = defaultMinutesToSeconds();
 loadFromLocalStorage();
+syncInputsWithDurations();
 let remainingTime = durations[currentMode];
 let isRunning = false;
 let completedSessions = 0;
@@ -143,6 +144,7 @@ function loadFromLocalStorage() {
 
 function resetDefaultDurations() {
   durations = defaultMinutesToSeconds();
+  syncInputsWithDurations();
   stopTimer();
   localStorage.removeItem(STORAGE_KEY);
 
@@ -151,6 +153,14 @@ function resetDefaultDurations() {
   updateTimerDisplay();
   updateStatusText();
   toggleExpandPanel();
+}
+
+function syncInputsWithDurations() {
+  focusMinutesInputEl.value = String(Math.round(durations.focus / 60));
+  shortBreakMinutesInputEl.value = String(
+    Math.round(durations.shortBreak / 60)
+  );
+  longBreakMinutesInputEl.value = String(Math.round(durations.longBreak / 60));
 }
 
 function initProgressRing() {
